@@ -1,19 +1,47 @@
 import React, { useState } from 'react';
 import { TextField, Button, Typography, Box, Container } from '@mui/material';
+import { firebaseAuth } from './firebase';
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
 
 const SignInForm: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || !password) {
       setError('Please fill in both fields');
     } else {
-      setError('');
-      // Handle form submission (e.g., call an API to authenticate the user)
-      console.log('Form submitted', { email, password });
+      try
+      {
+        await signInWithEmailAndPassword(firebaseAuth, email, password);
+
+        setError('');
+      }
+      catch (error)
+      {
+        setError('Invalid credentials');
+      }
+    }
+  };
+
+  const handleSignUp = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email || !password) {
+      setError('Please fill in both fields');
+    } else {
+      try
+      {
+        await createUserWithEmailAndPassword(firebaseAuth, email, password);
+
+        setError('');
+      }
+      catch (error)
+      {
+        setError('Something went');
+        console.log(error);
+      }
     }
   };
 
@@ -38,7 +66,7 @@ const SignInForm: React.FC = () => {
 
         {error && <Typography color="error" variant="body2">{error}</Typography>}
 
-        <form onSubmit={handleSubmit} style={{ width: '100%' }}>
+        <form style={{ width: '100%' }}>
           <TextField
             label="Email"
             type="email"
@@ -63,8 +91,19 @@ const SignInForm: React.FC = () => {
             color="primary"
             fullWidth
             sx={{ mt: 2 }}
+            onClick={handleLogin}
           >
             Sign In
+          </Button>
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            fullWidth
+            sx={{ mt: 2 }}
+            onClick={handleSignUp}
+          >
+            Sign Up
           </Button>
         </form>
       </Box>
