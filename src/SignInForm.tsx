@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { TextField, Button, Typography, Box, Container } from '@mui/material';
-import { firebaseAuth } from './firebase';
+import { firebaseAuth, firestore } from './firebase';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
+import { addDoc, collection } from 'firebase/firestore';
 
 const SignInForm: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -31,17 +32,15 @@ const SignInForm: React.FC = () => {
     if (!email || !password) {
       setError('Please fill in both fields');
     } else {
-      try
-      {
-        await createUserWithEmailAndPassword(firebaseAuth, email, password);
-
-        setError('');
-      }
-      catch (error)
-      {
-        setError('Something went');
-        console.log(error);
-      }
+      try {
+        const userCredential = await createUserWithEmailAndPassword(firebaseAuth, email, password);
+        const user = userCredential.user;
+        console.log("User created:", user);
+    }
+    catch (error) {
+        setError('Something went wrong');
+        console.error(error);
+    }
     }
   };
 

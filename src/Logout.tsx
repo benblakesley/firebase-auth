@@ -2,13 +2,22 @@ import { Box, Button, Container, Typography } from "@mui/material"
 import { signOut } from "firebase/auth"
 import { firebaseAuth } from "./firebase"
 
+interface Props
+{
+    email: string;
+}
 
-export const Logout = () => 
+export const Logout = ({email}: Props) => 
 {
     const handleLogout = async () =>
     {
         await signOut(firebaseAuth);
-    }
+    };
+
+    const addToDb = () => 
+    {
+
+    };
 
     return (
         <Container maxWidth="xs">
@@ -26,7 +35,7 @@ export const Logout = () =>
             }}
         >   
             <Typography variant="h4" gutterBottom>
-                Sign In
+                Sign Out from {email}
             </Typography>
             <Button
                 type="submit"
@@ -37,6 +46,16 @@ export const Logout = () =>
                 onClick={handleLogout}
             >
                 Sign Out
+            </Button>
+            <Button
+                type="submit"
+                variant="contained"
+                color="primary"
+                fullWidth
+                sx={{ mt: 2 }}
+                onClick={addToDb}
+            >
+                Add
             </Button>
           </Box>
         </Container>
